@@ -164,6 +164,6 @@ bpy.context.scene.frame_set(1)
 ## Resultado
 Obtenemos un túnel curvo formado por cubos laterales y un suleo, aplicando transformaciones de traslación y escalamiento junto con el modelo de color RGB. La cámara es animada para recorrer el interior del túnel siguiendo la misma trayectoria curva, creando una sensación de movimiento dinámico y profundidad espacial.
 
-[Da click aquí para ver el código](./Escenario Procedural.py)
+[Da click aquí para ver el código](./Escenario-Procedural.py)
 
 <img width="1109" height="743" alt="Captura de pantalla 2026-02-24 224740" src="https://github.com/user-attachments/assets/76d09e8b-b9b6-4f7b-a10f-0585a109f71a" />
