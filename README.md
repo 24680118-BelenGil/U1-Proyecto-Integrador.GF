@@ -71,26 +71,28 @@ for i in range(largo):
 * **n = max(0, i - punto_curva):** Evita que la curva empiece antes del bloque 15.
 * **entrada_suave = min(1.0, n / suavizado):** Hace que la curva aumente progresivamente.
 * **offset_curva = math.sin(n * 0.3) * amplitud * entrada_suave:** Calcula el desplazamiento lateral usando seno.
-* **pos_y = i * 2:** Separa los bloques 2 unidades en eje Y.
+* **pos_y = i * 2:** Separa los bloques 2 unidades en eje Y.}
+
+*Bloque izquierdo*
 ```python
     bpy.ops.mesh.primitive_cube_add(location=(-3 + offset_curva, pos_y, 1))
     obj = bpy.context.active_object
     obj.data.materials.append(mat_base if i % 2 == 0 else mat_acento)    
 ```
-*Bloque izquierdo*
 * **bpy.ops.mesh.primitive_cube_add(location=(-3 + offset_curva, pos_y, 1)):** Crea un cubo en posición izquierda con curva.
 * **obj = bpy.context.active_object:** Guarda el cubo recién creado.
 * **obj.data.materials.append(mat_base if i % 2 == 0 else mat_acento):** Asigna material gris si es par, neón si es impar.
+
+En este *if* define que si el bloque es impar lo hace mas alto.
 ```python
  if i % 2 != 0:
         obj.scale.z = 1.5  
 ```
-En este *if* define que si el bloque es impar lo hace mas alto.
+*Bloque derecho*
 ```python
     bpy.ops.mesh.primitive_cube_add(location=(3 + offset_curva, pos_y, 1))
     bpy.context.active_object.data.materials.append(mat_base) 
 ```
-*Bloque derecho*
 * **bpy.ops.mesh.primitive_cube_add(location=(3 + offset_curva, pos_y, 1)):** Crea cubo en lado derecho.
 * **bpy.context.active_object.data.materials.append(mat_base):** Le asigna material gris.
 ### Cámara
@@ -106,6 +108,8 @@ bpy.context.scene.frame_start = 1
 bpy.context.scene.frame_end = total_frames
 ```
 Definimos en que frame inicia la animación (1) y cuando termina ,segun el parámetro anteriormente definido.
+
+El bucle *for* ayuda a mover la cámara segun el total de frames.
 ```python
 for f in range(1, total_frames + 1):
 
@@ -121,21 +125,45 @@ for f in range(1, total_frames + 1):
 
     camara.keyframe_insert(data_path="location", frame=f)
 ```
+* **i_anim = (f / total_frames) * (largo - 1):** Convierte el frame en posición dentro del túnel.
+* **n_anim = max(0, i_anim - punto_curva):** Controla inicio de curva.
+* **entrada_anim = min(1.0, n_anim / suavizado):** Suaviza entrada de curva.
+* **offset_anim = math.sin(n_anim * 0.3) * amplitud * entrada_anim:** Calcula desplazamiento lateral animado.
+* **camara.location.x = offset_anim:** Mueve cámara lateralmente, eje X.
+* **camara.location.y = i_anim * 2:** La hace avanzar en el eje Y.
+* **camara.location.z = 1.8:** Fija la altura en el eje Z.
+* **camara.keyframe_insert(data_path="location", frame=f):** Guarda la posición en cada frame.
 ### Suelo y luces
+Creamos el suelo definiendo su localización y tamaño.
 ```python
 bpy.ops.mesh.primitive_plane_add(location=(0, largo, 0))
 bpy.context.active_object.scale = (20, largo + 10, 1)
 ```
+
+*Luz principal*
+
+Creamos una luz principal definiendo su localizacion con coordenadas x, y, z; se guarda y definimos su intensidad.
 ```python
 bpy.ops.object.light_add(type='POINT', location=(0, 10, 15))
 luz = bpy.context.active_object
 luz.data.energy = 10000
 ```
+
+*Luz al final*
+
+Agrega la luz al final del tunel, según la localización dada, para despues definir su intensidad.
 ```python
 bpy.ops.object.light_add(type='POINT', location=(0, largo * 2, 10))
 bpy.context.active_object.data.energy = 5000
 ```
+
+Este último fragmento, regresa al frame 1 para dejar lista la animación.
 ```python
 bpy.context.scene.frame_set(1)
 ```
 ## Resultado
+Obtenemos un túnel curvo formado por cubos laterales y un suleo, aplicando transformaciones de traslación y escalamiento junto con el modelo de color RGB. La cámara es animada para recorrer el interior del túnel siguiendo la misma trayectoria curva, creando una sensación de movimiento dinámico y profundidad espacial.
+
+[Da click aquí para ver el código](./Escenario Procedural.py)
+
+<img width="1109" height="743" alt="Captura de pantalla 2026-02-24 224740" src="https://github.com/user-attachments/assets/76d09e8b-b9b6-4f7b-a10f-0585a109f71a" />
